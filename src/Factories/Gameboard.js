@@ -1,14 +1,8 @@
 const Gameboard = (size) => {
 
-  // const coordinates = () => (xPos, yPos) => {
-  //   return {
-  //     x: xPos,
-  //     y: yPos
-  //   };
-  // }
-
-  const cell = () => {
+  const cell = (x, y) => {
     return {
+      coords: {x, y},
       hasShip: '',
       isShot: false
     };
@@ -17,7 +11,7 @@ const Gameboard = (size) => {
   const _makeGrid = (size) => {
     const arr = [];
     for (let i = 0; i < size * size; i++) {
-      arr.push(cell());
+      arr.push(cell(i % size, Math.floor(i / size)));
     }
     return arr;
   }
@@ -41,6 +35,7 @@ const Gameboard = (size) => {
     at,
     receiveAttack,
     setShip,
+    board,
   };
 }
 
