@@ -1,35 +1,46 @@
 const Gameboard = (size) => {
 
-  const cell = (xPos, yPos) => {
+  // const coordinates = () => (xPos, yPos) => {
+  //   return {
+  //     x: xPos,
+  //     y: yPos
+  //   };
+  // }
+
+  const cell = () => {
     return {
-      x: xPos,
-      y: yPos,
-      hasShip: false,
+      hasShip: '',
       isShot: false
     };
   }
 
   const _makeGrid = (size) => {
     const arr = [];
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) {
-        arr.push(cell(j, i));
-      }
+    for (let i = 0; i < size * size; i++) {
+      arr.push(cell());
     }
     return arr;
   }
 
-  const at = (x, y) => board[x + y * size];
-
   const board = _makeGrid(size);
+  const at = (coords) => board[coords.x + coords.y * size];
 
-  const receiveAttack = (x, y) => {
-    at(x, y).isShot = true;
+  const receiveAttack = (coords) => {
+    at(coords).isShot = true;
+  }
+
+  const setShip = (ship, coords, axis = 'x') => {
+    let newCoords = coords;
+    for (let i = 0; i < ship.getLength(); i++) {
+      at(newCoords).hasShip = ship.name;
+      axis === 'x' ? newCoords.x++: newCoords.y++;
+    }
   }
 
   return {
     at,
     receiveAttack,
+    setShip,
   };
 }
 

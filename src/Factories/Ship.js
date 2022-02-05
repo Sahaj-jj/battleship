@@ -1,23 +1,21 @@
-const Ship = (length) => {
+const Ship = (length, name) => {
   const shipLength = length;
-  const hitsArray = new Array(length).fill(false);
+  let hitCount = 0;
 
   // Getters
   const getLength = () => shipLength;
-  const getHits = () => hitsArray;
+  const getHits = () => hitCount;
 
-  const hit = (pos) => {
-    hitsArray[pos] = true;
+  const hit = () => {
+    hitCount++;
   }
 
   const isSunk = () => {
-    for (const isHit of hitsArray) {
-      if (!isHit) return false;
-    }
-    return true;
+    return shipLength === hitCount;
   }
 
   return {
+    name,
     getLength,
     getHits,
     hit,
