@@ -1,0 +1,31 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+.main {
+	display: flex;
+	gap: 10px;
+}
+
+.board {
+	display: grid;
+	grid-template-rows: repeat(10, 1fr);
+	grid-template-columns: repeat(10, 1fr);
+	width: 40%;
+	place-items: center;
+}
+
+.cell {
+	height: 60px;
+	width: 100%;
+	background-color: rgb(110, 109, 109);
+	border: 1px solid black;
+}
+
+.ship {
+	background-color: aqua;
+}
