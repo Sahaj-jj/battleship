@@ -1,5 +1,7 @@
 const Gameboard = (size) => {
 
+  const ships = [];
+
   const cell = (x, y) => {
     return {
       coords: {x, y},
@@ -20,10 +22,14 @@ const Gameboard = (size) => {
   const at = (coords) => board[coords.x + coords.y * size];
 
   const receiveAttack = (coords) => {
-    at(coords).isShot = true;
+    const cell = at(coords);
+    if (cell.isShot) return;
+    cell.isShot = true;
+    if (cell.hasShip) ships.find(ship => ship.name === cell.hasShip).hit();
   }
 
   const setShip = (ship, coords, axis = 'x') => {
+    ships.push(ship);
     let newCoords = coords;
     for (let i = 0; i < ship.getLength(); i++) {
       at(newCoords).hasShip = ship.name;
@@ -31,11 +37,13 @@ const Gameboard = (size) => {
     }
   }
 
+  const getBoard = () => board;
+
   return {
     at,
     receiveAttack,
     setShip,
-    board,
+    getBoard,
   };
 }
 

@@ -4,7 +4,6 @@ const Player = (name) => {
   return {
     name,
     gameboard: Gameboard(10),
-    ships: [],
     isActive: false
   };
 }
