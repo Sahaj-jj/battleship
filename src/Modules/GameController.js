@@ -42,33 +42,34 @@ const GameController = (() => {
     UI.renderGameboard('P2', player2.name, player2.gameboard.getBoard());
   }
 
-  const playRound = async () => {
-    toggleActivePlayer();
-    await sleep(300);
-    const coords = AI.getCoords(opponent().gameboard.getBoard());
-    opponent().gameboard.receiveAttack(coords);
-    toggleActivePlayer();
+  const playTurn = (coords) => {
+    const opponentBoard = opponent().gameboard;
+    fireAttack(opponentBoard, coords);
+    if (!opponentBoard.isShipHit(coords)) toggleActivePlayer();
+    playGame();
   }
 
-  const playGame = () => {
-    // playRound();
+  const playGame = async () => {
+    if (player2.isActive) {
+      await sleep(300);
+      playTurn(AI.getCoords(opponent().gameboard.getBoard()));
+    }
   }
 
-  const fireAttack = (coords) => {
-    if (!opponent().gameboard.isValidAttack(coords)) return;
-    opponent().gameboard.receiveAttack(coords);
-    playRound();
+  const fireAttack = (board, coords) => {
+    if (!board.isValidAttack(coords)) return;
+    board.receiveAttack(coords);
   }
 
   const init = () => {
     initPlayer1();
     initPlayer2();
-    playGame();
   };
 
   return {
     init,
     fireAttack,
+    playTurn,
   };
 
 })();

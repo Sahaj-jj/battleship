@@ -18,7 +18,7 @@ const UI = (() => {
     $cell.addEventListener('click', () => {
       const coordsArray = $cell.getAttribute('data-coords').split(' ');
       const coords = {x: +coordsArray[0], y: +coordsArray[1]};
-      GameController.fireAttack(coords);
+      GameController.playTurn(coords);
     });
   }
 

@@ -27,6 +27,10 @@ const Gameboard = (size) => {
     return !at(coords).isShot;
   }
 
+  const isShipHit = (coords) => {
+    return at(coords).hasShip !== '';
+  }
+
   const receiveAttack = (coords) => {
     const cell = at(coords);
     cell.isShot = true;
@@ -52,6 +56,7 @@ const Gameboard = (size) => {
   return {
     at,
     isValidAttack,
+    isShipHit,
     receiveAttack,
     setShip,
     getBoard,
