@@ -22,8 +22,20 @@ const UI = (() => {
     });
   }
 
-  const renderGameboard = (player, board) => {
+  const cellHit = (coords) => {
+    const encodedCoords = `${coords.x} ${coords.y}`;
+    const $cell = document.querySelector(`.active > [data-coords="${encodedCoords}"]`);
+    $cell.classList.add('hit');
+  }
+
+  const toggleActiveBoard = () => {
+    $p1Gameboard.classList.toggle('active');
+    $p2Gameboard.classList.toggle('active');
+  }
+
+  const renderGameboard = (player, playerName, board) => {
     const $board = player === 'P1' ? $p1Gameboard : $p2Gameboard;
+    $board.classList.add(playerName);
     board.forEach(cell => $board.appendChild(newCellDOM(cell)));
   }
 
@@ -34,6 +46,8 @@ const UI = (() => {
   return {
     init,
     renderGameboard,
+    cellHit,
+    toggleActiveBoard,
   };
 
 })();

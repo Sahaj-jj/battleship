@@ -1,3 +1,5 @@
+import UI from "../Modules/UI";
+
 const Gameboard = (size) => {
 
   const ships = [];
@@ -21,11 +23,19 @@ const Gameboard = (size) => {
   const board = _makeGrid(size);
   const at = (coords) => board[coords.x + coords.y * size];
 
+  const isValidAttack = (coords) => {
+    return !at(coords).isShot;
+  }
+
   const receiveAttack = (coords) => {
     const cell = at(coords);
-    if (cell.isShot) return;
     cell.isShot = true;
-    if (cell.hasShip) ships.find(ship => ship.name === cell.hasShip).hit();
+    UI.cellHit(coords);
+    if (cell.hasShip) {
+      const ship = ships.find(ship => ship.name === cell.hasShip);
+      ship.hit();
+      if (ship.isSunk()) console.log(ship.name);
+    }
   }
 
   const setShip = (ship, coords, axis = 'x') => {
@@ -41,6 +51,7 @@ const Gameboard = (size) => {
 
   return {
     at,
+    isValidAttack,
     receiveAttack,
     setShip,
     getBoard,

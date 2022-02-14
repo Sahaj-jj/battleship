@@ -4,7 +4,7 @@ const Player = (name) => {
   return {
     name,
     gameboard: Gameboard(10),
-    isActive: false
+    isActive: false,
   };
 }
 
