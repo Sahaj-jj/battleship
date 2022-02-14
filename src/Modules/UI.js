@@ -40,8 +40,10 @@ const UI = (() => {
   }
 
   const init = () => {
-    renderGameboard();
+    $p2Gameboard.classList.add('active');
   }
+
+  init();
 
   return {
     init,
