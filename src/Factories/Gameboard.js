@@ -38,7 +38,7 @@ const Gameboard = (size) => {
     if (cell.hasShip) {
       const ship = ships.find(ship => ship.name === cell.hasShip);
       ship.hit();
-      if (ship.isSunk()) console.log(ship.name);
+      if (ship.isSunk()) shipSunk(ship.name);
     }
   }
 
@@ -49,6 +49,12 @@ const Gameboard = (size) => {
       at(newCoords).hasShip = ship.name;
       axis === 'x' ? newCoords.x++: newCoords.y++;
     }
+  }
+
+  const shipSunk = (shipName) => {
+    console.log(shipName);
+    const coordsArray = board.filter(cell => cell.hasShip === shipName).map(cell => cell.coords);
+    UI.shipSunk(coordsArray);
   }
 
   const getBoard = () => board;

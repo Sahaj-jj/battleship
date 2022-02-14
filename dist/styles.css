@@ -1,3 +1,11 @@
+:root {
+	--cell-size: 45px;
+	--p1-board: rgb(223, 213, 230);
+	--p2-board: rgb(250, 223, 223);
+	--ship: rgb(29, 29, 29);
+	--ship-sunk: rgb(88, 88, 88);
+}
+
 *,
 *::before,
 *::after {
@@ -8,28 +16,80 @@
 
 .main {
 	display: flex;
-	gap: 10px;
+	width: 100%;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+	gap: 30px;
 }
 
 .board {
-	display: grid;
-	grid-template-rows: repeat(10, 1fr);
-	grid-template-columns: repeat(10, 1fr);
-	width: 40%;
-	place-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	width: calc(var(--cell-size) * 10);
+	pointer-events: none;
+}
+
+.board.active {
+	outline: 2px solid red;
+	pointer-events: auto;
 }
 
 .cell {
-	height: 60px;
-	width: 100%;
-	background-color: rgb(110, 109, 109);
-	border: 1px solid black;
+	height: var(--cell-size);
+	width: var(--cell-size);
+	border-radius: 5px;
+	border: 1px solid rgb(255, 255, 255);
+	position: relative;
 }
 
-.cell.hit {
+.P1 > .cell {
+	background-color: var(--p1-board);
+}
+
+.P2 > .cell {
+	background-color: var(--p2-board);
+}
+
+.cell::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+	height: 20px;
+	width: 20px;
+	border-radius: 50%;
+	transform: scale(0);
+	opacity: 0;
+	transition: transform 0.4s cubic-bezier(0.42, 0, 0.55, 1.9);
+}
+
+.cell.hit::after {
+	opacity: 1;
+	transform: scale(1);
+	background-color: grey;
+}
+
+.cell.hit.ship::after {
 	background-color: red;
 }
 
-.ship {
-	background-color: aqua;
+.cell:hover {
+	filter: brightness(95%);
+}
+
+.cell:active {
+	filter: brightness(95%);
+	transform: scale(0.9);
+}
+
+.P1 > .ship {
+	background-color: var(--ship);
+}
+
+.ship.sunk {
+	background-color: var(--ship-sunk);
 }

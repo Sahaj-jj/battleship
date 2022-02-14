@@ -33,6 +33,12 @@ const UI = (() => {
     $p2Gameboard.classList.toggle('active');
   }
 
+  const shipSunk = (coordsArray) => {
+    coordsArray.forEach(coords => {
+      document.querySelector(`.active > [data-coords="${coords.x} ${coords.y}"]`).classList.add('sunk');
+    })
+  }
+
   const renderGameboard = (player, playerName, board) => {
     const $board = player === 'P1' ? $p1Gameboard : $p2Gameboard;
     $board.classList.add(playerName);
@@ -49,6 +55,7 @@ const UI = (() => {
     init,
     renderGameboard,
     cellHit,
+    shipSunk,
     toggleActiveBoard,
   };
 
