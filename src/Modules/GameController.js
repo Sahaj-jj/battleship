@@ -12,10 +12,6 @@ const GameController = (() => {
     return new Promise(resolve => setTimeout(resolve, ms));
   } 
 
-  // const activePlayer = () => {
-  //   return player1.isActive ? player1: player2;
-  // }
-
   const opponent = () => {
     return player1.isActive ? player2: player1;
   }
@@ -44,7 +40,8 @@ const GameController = (() => {
 
   const playTurn = (coords) => {
     const opponentBoard = opponent().gameboard;
-    fireAttack(opponentBoard, coords);
+    if (!opponentBoard.isValidAttack(coords)) return;
+    opponentBoard.receiveAttack(coords);
     if (!opponentBoard.isShipHit(coords)) toggleActivePlayer();
     playGame();
   }
@@ -56,11 +53,6 @@ const GameController = (() => {
     }
   }
 
-  const fireAttack = (board, coords) => {
-    if (!board.isValidAttack(coords)) return;
-    board.receiveAttack(coords);
-  }
-
   const init = () => {
     initPlayer1();
     initPlayer2();
@@ -68,7 +60,6 @@ const GameController = (() => {
 
   return {
     init,
-    fireAttack,
     playTurn,
   };
 
