@@ -104,6 +104,7 @@
 
 .sample > .ship {
 	background-color: var(--ship);
+	z-index: 10;
 }
 
 .sample > .temp {
