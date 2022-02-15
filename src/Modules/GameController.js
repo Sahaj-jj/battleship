@@ -2,6 +2,7 @@ import Player from "../Factories/Player"
 import Ship from "../Factories/Ship";
 import UI from "./UI";
 import AI from "./AIPlayer";
+import PlaceShips from "./PlaceShips";
 
 const GameController = (() => {
 
@@ -24,9 +25,10 @@ const GameController = (() => {
 
   const initPlayer1 = () => {
     player1.isActive = true;
-    let ships = [Ship(4, 'ak'), Ship(2, 'b')];
-    player1.gameboard.setShip(ships[0], {x: 1, y: 2}, 'x');
-    player1.gameboard.setShip(ships[1], {x: 2, y: 5}, 'y');
+    const shipInfoArray = PlaceShips.getShipInfoArray();
+    shipInfoArray.forEach(shipInfo => {
+      player1.gameboard.setShip(shipInfo.ship, shipInfo.coords, shipInfo.axis);
+    });
     UI.renderGameboard('P1', player1.name, player1.gameboard.getBoard());
   }
 

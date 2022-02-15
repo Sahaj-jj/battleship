@@ -40,7 +40,7 @@ const UI = (() => {
   }
 
   const renderGameboard = (player, playerName, board) => {
-    const $board = player === 'P1' ? $p1Gameboard : $p2Gameboard;
+    let $board = player === 'P1' ? $p1Gameboard : $p2Gameboard;
     $board.classList.add(playerName);
     board.forEach(cell => $board.appendChild(newCellDOM(cell)));
   }

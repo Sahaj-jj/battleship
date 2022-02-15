@@ -1,3 +1,4 @@
-import GameController from "./Modules/GameController";
+// import GameController from "./Modules/GameController";
+import PlaceShips from "./Modules/PlaceShips";
 
-GameController.init();
+PlaceShips.init();
