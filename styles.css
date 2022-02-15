@@ -3,7 +3,7 @@
 	--p1-board: rgb(223, 213, 230);
 	--p2-board: rgb(250, 223, 223);
 	--ship: rgb(29, 29, 29);
-	--ship-sunk: rgb(88, 88, 88);
+	--ship-sunk: rgb(109, 109, 109);
 }
 
 *,
@@ -12,6 +12,18 @@
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+}
+
+.modal {
+	position: absolute;
+	height: 100vh;
+	width: 100%;
+	z-index: 5;
+	background-color: white;
+}
+
+.container {
+	position: relative;
 }
 
 .main {
@@ -27,7 +39,6 @@
 	display: flex;
 	flex-wrap: wrap;
 	width: calc(var(--cell-size) * 10);
-	pointer-events: none;
 }
 
 .board.active {
@@ -39,6 +50,7 @@
 	height: var(--cell-size);
 	width: var(--cell-size);
 	border-radius: 5px;
+	background-color: var(--p1-board);
 	border: 1px solid rgb(255, 255, 255);
 	position: relative;
 }
@@ -88,6 +100,14 @@
 
 .P1 > .ship {
 	background-color: var(--ship);
+}
+
+.sample > .ship {
+	background-color: var(--ship);
+}
+
+.sample > .temp {
+	background-color: grey;
 }
 
 .ship.sunk {
