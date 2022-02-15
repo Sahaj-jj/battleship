@@ -4,7 +4,7 @@ import Ship from "../Factories/Ship";
 
 const PlaceShips = (() => {
   const player = Player('sample');
-  const ships = [Ship(4, 'ak'), Ship(2, 'b'), Ship(5, 'c')];
+  const ships = [Ship(4, 'ak'), Ship(2, 'b'), Ship(5, 'c'), Ship(4, 'd'), Ship(2, 'e')];
   let current = {
     shipNum: 0,
     shipCoordsArray: [],
@@ -73,7 +73,9 @@ const renderGameboard = (player, playerName, board) => {
   const placeShip = (coords, axis) => {
     shipInfoArray.push(shipInfo(ships[current.shipNum++], coords, axis));
     current.shipCoordsArray.forEach(coords => {
-      document.querySelector(`.board > [data-coords="${coords.x} ${coords.y}"]`).classList.add('ship');
+      const $cell = document.querySelector(`.board > [data-coords="${coords.x} ${coords.y}"]`)
+      $cell.classList.add('ship');
+      $cell.classList.remove('temp');
     })
     if (shipInfoArray.length === ships.length) {
       $modal.remove();
@@ -85,7 +87,6 @@ const renderGameboard = (player, playerName, board) => {
 
   const init = () => {
     renderGameboard('sample', player.name, player.gameboard.getBoard());
-    $modal.addEventListener('keyup', )
   }
 
   return {
