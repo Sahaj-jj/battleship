@@ -10,6 +10,13 @@ const UI = (() => {
     const coordsArray = coordsString.split(' ');
     return {x: +coordsArray[0], y: +coordsArray[1]};
   }
+
+  const createHtmlElement = (type, classArray = null, text = null) => {
+    const element = document.createElement(type);
+    if (classArray) classArray.forEach(cls => element.classList.add(cls));
+    if (text) element.textContent = text;
+    return element;
+  }
   
   const newCellDOM = (cell) => {
       const $cell = document.createElement('div');
@@ -77,10 +84,15 @@ const UI = (() => {
   }
 
   const newShipDOM = (ship, isPlaced = false) => {
-    const $ship = document.createElement('div');
-    $ship.textContent = ship.name;
-    if (ship.isSunk() || (mode === 'PLACE' && isPlaced)) $ship.classList.add('sunk');
-    return $ship;
+    const $shipContainer = createHtmlElement('div', ['ship-container']);
+    if (ship.isSunk() || (mode === 'PLACE' && isPlaced)) $shipContainer.classList.add('sunk');
+    $shipContainer.appendChild(createHtmlElement('div', ['ship-name'], ship.name));
+    const $shipBody = createHtmlElement('div', ['ship-body']);
+    for (let i = 0; i < ship.getLength(); i++) {
+      $shipBody.appendChild(createHtmlElement('div', ['ship-cell']));
+    }
+    $shipContainer.appendChild($shipBody);
+    return $shipContainer;
   }
 
   const updateShipsDisplay = (playerName, ships, shipNum = -1) => {
