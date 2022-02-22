@@ -118,3 +118,7 @@
 .ship.sunk {
 	background-color: var(--ship-sunk);
 }
+
+.ships-display > .sunk {
+	opacity: 0.5;
+}
