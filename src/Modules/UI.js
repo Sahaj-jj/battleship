@@ -1,9 +1,16 @@
 import GameController from "./GameController";
-
+import PlaceShips from "./PlaceShips";
 
 const UI = (() => {
   const $p1Gameboard = document.querySelector('.P1');
   const $p2Gameboard = document.querySelector('.P2');
+  const $sampleGameBoard = document.querySelector('.sample');
+  let mode = 'PLAY';
+
+  const decodeCoords = (coordsString) => {
+    const coordsArray = coordsString.split(' ');
+    return {x: +coordsArray[0], y: +coordsArray[1]};
+  }
   
   const newCellDOM = (cell) => {
       const $cell = document.createElement('div');
@@ -15,10 +22,17 @@ const UI = (() => {
   }
 
   const addCellListener = ($cell) => {
+    if (mode === 'PLACE') {
+      $cell.addEventListener('click', () => {
+        PlaceShips.placeShip(decodeCoords($cell.getAttribute('data-coords')));
+      });
+  
+      $cell.addEventListener('mouseover', () => {
+        PlaceShips.showShip(decodeCoords($cell.getAttribute('data-coords')));
+      });
+    }
     $cell.addEventListener('click', () => {
-      const coordsArray = $cell.getAttribute('data-coords').split(' ');
-      const coords = {x: +coordsArray[0], y: +coordsArray[1]};
-      GameController.playTurn(coords);
+      GameController.playTurn(decodeCoords($cell.getAttribute('data-coords')));
     });
   }
 
@@ -41,6 +55,11 @@ const UI = (() => {
 
   const renderGameboard = (player, playerName, board) => {
     let $board = player === 'P1' ? $p1Gameboard : $p2Gameboard;
+    if (player === 'sample') {
+      $board = $sampleGameBoard;
+      mode = 'PLACE';
+    } else mode = 'PLAY';
+    $board.textContent = '';
     $board.classList.add(playerName);
     board.forEach(cell => $board.appendChild(newCellDOM(cell)));
   }
