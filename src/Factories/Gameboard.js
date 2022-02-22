@@ -57,6 +57,14 @@ const Gameboard = (size) => {
     UI.shipSunk(coordsArray);
   }
 
+  const isCollisions = (shipCoordsArray) => {
+    for (const shipCoords of shipCoordsArray) {
+      if (shipCoords.x > size - 1 || shipCoords.y > size - 1) return true;
+      if (at(shipCoords).hasShip !== '') return true;
+    }
+    return false;
+  }
+
   const getBoard = () => board;
 
   return {
@@ -65,6 +73,7 @@ const Gameboard = (size) => {
     isShipHit,
     receiveAttack,
     setShip,
+    isCollisions,
     getBoard,
   };
 }

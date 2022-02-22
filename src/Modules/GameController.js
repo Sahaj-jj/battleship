@@ -25,10 +25,7 @@ const GameController = (() => {
 
   const initPlayer1 = () => {
     player1.isActive = true;
-    const shipInfoArray = PlaceShips.getShipInfoArray();
-    shipInfoArray.forEach(shipInfo => {
-      player1.gameboard.setShip(shipInfo.ship, shipInfo.coords, shipInfo.axis);
-    });
+    player1.gameboard = PlaceShips.getSamplePlayer().gameboard;
     UI.renderGameboard('P1', player1.name, player1.gameboard.getBoard());
   }
 

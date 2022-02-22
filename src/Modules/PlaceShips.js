@@ -12,14 +12,19 @@ const PlaceShips = (() => {
   };
   const $modal = document.querySelector('.modal')
   const $sampleGameBoard = document.querySelector('.sample');
-  const shipInfoArray = [];
-  const shipInfo = (ship, coords, axis) => {
-    return {
-      ship,
-      coords,
-      axis
-    };
-  };
+
+  // Util 
+
+  const decodeCoords = (coordsString) => {
+    const coordsArray = coordsString.split(' ');
+    return {x: +coordsArray[0], y: +coordsArray[1]};
+  }
+
+  const cellAt = (coords) => {
+    return document.querySelector(`[data-coords="${coords.x} ${coords.y}"]`);
+  }
+
+  // DOM
 
   const newCellDOM = (cell) => {
     const $cell = document.createElement('div');
@@ -27,62 +32,74 @@ const PlaceShips = (() => {
     $cell.setAttribute('data-coords', `${cell.coords.x} ${cell.coords.y}`);
     addCellListener($cell);
     return $cell;
-}
+  }
 
-const addCellListener = ($cell) => {
-  $cell.addEventListener('click', () => {
-    const coordsArray = $cell.getAttribute('data-coords').split(' ');
-    const coords = {x: +coordsArray[0], y: +coordsArray[1]};
-    placeShip(coords, current.axis);
-  });
+  const addCellListener = async ($cell) => {
+    $cell.addEventListener('click', () => {
+      placeShip(decodeCoords($cell.getAttribute('data-coords')), current.axis);
+      Promise.resolve(decodeCoords($cell.getAttribute('data-coords')));
+    });
 
-  $cell.addEventListener('mouseover', () => {
-    const coordsArray = $cell.getAttribute('data-coords').split(' ');
-    const coords = {x: +coordsArray[0], y: +coordsArray[1]};
-    showShip(coords, current.axis);
-  });
-}
+    $cell.addEventListener('mouseover', () => {
+      showShip(decodeCoords($cell.getAttribute('data-coords')), current.axis);
+    });
+  }
 
-// const cellAt = (coords) => {
-//   return document.querySelector(`[data-coords="${coords.x} ${coords.y}"]`);
-// }
 
-const showShip = (coords, axis) => {
-  if (current.shipCoordsArray.length !== 0) {
+
+  const showShip = (coords, axis) => {
+    if (current.shipCoordsArray.length !== 0) {
+      current.shipCoordsArray.forEach(coords => {
+        cellAt(coords).classList.remove('temp');
+        cellAt(coords).classList.remove('invalid');
+      })
+    }
+    current.shipCoordsArray = [];
+    makeShip(coords, axis);
+    if (!isShipValid()) {
+      current.shipCoordsArray.forEach(coords => {
+        cellAt(coords).classList.add("invalid");
+      })
+    }
     current.shipCoordsArray.forEach(coords => {
-      document.querySelector(`.board > [data-coords="${coords.x} ${coords.y}"]`).classList.remove('temp');
+      cellAt(coords).classList.add("temp");
     })
   }
-  current.shipCoordsArray = [];
-  let newCoords = coords;
-  for (let i = 0; i < ships[current.shipNum].getLength(); i++) {
-    current.shipCoordsArray.push({x: newCoords.x, y: newCoords.y});
-    document.querySelector(`.board > [data-coords="${newCoords.x} ${newCoords.y}"]`).classList.add('temp');
-    axis === 'x' ? newCoords.x++: newCoords.y++;
-    if (newCoords.x > 9 || newCoords.y > 9) break;
-  }
-}
 
-const renderGameboard = (player, playerName, board) => {
-  let $board = $sampleGameBoard;
-  $board.classList.add(playerName);
-  board.forEach(cell => $board.appendChild(newCellDOM(cell)));
-}
+  const makeShip = (coords, axis) => {
+    let newCoords = coords;
+    for (let i = 0; i < ships[current.shipNum].getLength(); i++) {
+      current.shipCoordsArray.push({x: newCoords.x, y: newCoords.y});
+      axis === 'x' ? newCoords.x++: newCoords.y++;
+      if (newCoords.x > 9 || newCoords.y > 9) break;
+    }
+  }
+
+  const isShipValid = () => {
+    return (!player.gameboard.isCollisions(current.shipCoordsArray) && current.shipCoordsArray.length === ships[current.shipNum].getLength());
+  }
+
+  const renderGameboard = (player, playerName, board) => {
+    let $board = $sampleGameBoard;
+    $board.classList.add(playerName);
+    board.forEach(cell => $board.appendChild(newCellDOM(cell)));
+  }
 
   const placeShip = (coords, axis) => {
-    shipInfoArray.push(shipInfo(ships[current.shipNum++], coords, axis));
+    if (!isShipValid()) return;
+    player.gameboard.setShip(ships[current.shipNum++], coords, axis);
     current.shipCoordsArray.forEach(coords => {
-      const $cell = document.querySelector(`.board > [data-coords="${coords.x} ${coords.y}"]`)
+      const $cell = cellAt(coords);
       $cell.classList.add('ship');
       $cell.classList.remove('temp');
     })
-    if (shipInfoArray.length === ships.length) {
+    if (current.shipNum === ships.length - 1) {
       $modal.remove();
       GameController.init();
     }
   }
 
-  const getShipInfoArray = () => shipInfoArray;
+  const getSamplePlayer = () => player;
 
   const init = () => {
     renderGameboard('sample', player.name, player.gameboard.getBoard());
@@ -91,12 +108,12 @@ const renderGameboard = (player, playerName, board) => {
         current.axis = current.axis === 'x' ? 'y': 'x';
         showShip(current.shipCoordsArray[0], current.axis);
       }
-    })
+    });
   }
 
   return {
     init,
-    getShipInfoArray,
+    getSamplePlayer,
   }
 
 })();

@@ -111,6 +111,10 @@
 	background-color: grey;
 }
 
+.sample > .invalid {
+	background-color: red;
+}
+
 .ship.sunk {
 	background-color: var(--ship-sunk);
 }
