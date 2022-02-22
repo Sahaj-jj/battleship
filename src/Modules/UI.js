@@ -2,9 +2,8 @@ import GameController from "./GameController";
 import PlaceShips from "./PlaceShips";
 
 const UI = (() => {
-  const $p1Gameboard = document.querySelector('.P1');
-  const $p2Gameboard = document.querySelector('.P2');
-  const $sampleGameBoard = document.querySelector('.sample');
+  const $main = document.querySelector('.main');
+  const $modal = document.querySelector('.modal');
   let mode = 'PLAY';
 
   const decodeCoords = (coordsString) => {
@@ -31,7 +30,7 @@ const UI = (() => {
         PlaceShips.showShip(decodeCoords($cell.getAttribute('data-coords')));
       });
     }
-    $cell.addEventListener('click', () => {
+    else $cell.addEventListener('click', () => {
       GameController.playTurn(decodeCoords($cell.getAttribute('data-coords')));
     });
   }
@@ -43,8 +42,10 @@ const UI = (() => {
   }
 
   const toggleActiveBoard = () => {
-    $p1Gameboard.classList.toggle('active');
-    $p2Gameboard.classList.toggle('active');
+    const $gameboardContainers = Array.from($main.children);
+    $gameboardContainers.forEach($gameboard => {
+      $gameboard.firstChild.classList.toggle('active');
+    });
   }
 
   const shipSunk = (coordsArray) => {
@@ -53,26 +54,46 @@ const UI = (() => {
     })
   }
 
-  const renderGameboard = (player, playerName, board) => {
-    let $board = player === 'P1' ? $p1Gameboard : $p2Gameboard;
-    if (player === 'sample') {
-      $board = $sampleGameBoard;
-      mode = 'PLACE';
-    } else mode = 'PLAY';
-    $board.textContent = '';
-    $board.classList.add(playerName);
-    board.forEach(cell => $board.appendChild(newCellDOM(cell)));
+  const newGameboardContainerDOM = (playerName) => {
+    const $container = document.createElement('div');
+    $container.classList.add('container');
+    const $board = document.createElement('div');
+    $board.classList.add(`${playerName}`);
+    $board.classList.add('board');
+    const $shipsDisplay = document.createElement('div');
+    $shipsDisplay.classList.add('ships-display');
+    $container.appendChild($board);
+    $container.appendChild($shipsDisplay);
+    if (mode === 'PLACE') $modal.appendChild($container);
+    else $main.appendChild($container);
+    return $container;
   }
 
-  const init = () => {
-    $p2Gameboard.classList.add('active');
+  const renderGameboard = (player, playerName, board, isActive = false) => {
+    mode = playerName === 'sample' ? 'PLACE': 'PLAY';
+    const $container = newGameboardContainerDOM(playerName);
+    if (isActive) $container.firstChild.classList.add('active');
+    board.forEach(cell => $container.firstChild.appendChild(newCellDOM(cell)));
   }
 
-  init();
+  const newShipDOM = (ship, isPlaced = false) => {
+    const $ship = document.createElement('div');
+    $ship.textContent = ship.name;
+    if (ship.isSunk() || (mode === 'PLACE' && isPlaced)) $ship.classList.add('sunk');
+    return $ship;
+  }
+
+  const updateShipsDisplay = (playerName, ships, shipNum = -1) => {
+    const $shipsDisplay = document.querySelector(`.${playerName}`).nextElementSibling;
+    $shipsDisplay.textContent = '';
+    ships.forEach((ship, index) => {
+      $shipsDisplay.appendChild(newShipDOM(ship, index <= shipNum));
+    });
+  }
 
   return {
-    init,
     renderGameboard,
+    updateShipsDisplay,
     cellHit,
     shipSunk,
     toggleActiveBoard,

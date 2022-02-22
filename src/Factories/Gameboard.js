@@ -66,6 +66,7 @@ const Gameboard = (size) => {
   }
 
   const getBoard = () => board;
+  const getShips = () => ships;
 
   return {
     at,
@@ -75,6 +76,7 @@ const Gameboard = (size) => {
     setShip,
     isCollisions,
     getBoard,
+    getShips,
   };
 }
 

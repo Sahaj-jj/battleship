@@ -11,7 +11,7 @@ const Ship = (length, name) => {
   }
 
   const isSunk = () => {
-    return shipLength === hitCount;
+    return hitCount >= shipLength;
   }
 
   return {

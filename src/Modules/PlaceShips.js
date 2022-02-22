@@ -11,7 +11,7 @@ const PlaceShips = (() => {
     shipCoordsArray: [],
     axis: 'x'
   };
-  const $modal = document.querySelector('.modal')
+  const $modal = document.querySelector('.modal');
 
   // Util 
 
@@ -60,7 +60,7 @@ const PlaceShips = (() => {
     if (!isShipValid()) return;
     player.gameboard.setShip(ships[current.shipNum++], coords, current.axis);
     current.shipCoordsArray.forEach(coords => cellAt(coords).classList.add('ship'));
-    UI.renderGameboard('sample', player.name, player.gameboard.getBoard());
+    UI.updateShipsDisplay(player.name, ships, current.shipNum - 1);
     if (current.shipNum === ships.length) {
       $modal.remove();
       GameController.init();
@@ -71,6 +71,7 @@ const PlaceShips = (() => {
 
   const init = () => {
     UI.renderGameboard('sample', player.name, player.gameboard.getBoard());
+    UI.updateShipsDisplay(player.name, ships);
     document.addEventListener('keyup', ({ key }) => {
       if (key === 'R' || key === 'r') {
         current.axis = current.axis === 'x' ? 'y': 'x';

@@ -6,8 +6,8 @@ import PlaceShips from "./PlaceShips";
 
 const GameController = (() => {
 
-  const player1 = Player('player');
-  const player2 = Player('enemy');
+  const player1 = Player('P1');
+  const player2 = Player('P2');
 
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -27,6 +27,7 @@ const GameController = (() => {
     player1.isActive = true;
     player1.gameboard = PlaceShips.getSamplePlayer().gameboard;
     UI.renderGameboard('P1', player1.name, player1.gameboard.getBoard());
+    UI.updateShipsDisplay(player1.name, player1.gameboard.getShips());
   }
 
   const initPlayer2 = () => {
@@ -34,13 +35,16 @@ const GameController = (() => {
     let ships = [Ship(3, 'enemya'), Ship(2, 'enemyb')];
     player2.gameboard.setShip(ships[0], {x: 1, y: 1}, 'x');
     player2.gameboard.setShip(ships[1], {x: 2, y: 5}, 'y');
-    UI.renderGameboard('P2', player2.name, player2.gameboard.getBoard());
+    UI.renderGameboard('P2', player2.name, player2.gameboard.getBoard(), true);
+    UI.updateShipsDisplay(player2.name, player2.gameboard.getShips());
+
   }
 
   const playTurn = (coords) => {
     const opponentBoard = opponent().gameboard;
     if (!opponentBoard.isValidAttack(coords)) return;
     opponentBoard.receiveAttack(coords);
+    UI.updateShipsDisplay(opponent().name, opponentBoard.getShips());
     if (!opponentBoard.isShipHit(coords)) toggleActivePlayer();
     playGame();
   }
