@@ -1,13 +1,12 @@
-import Player from "../Factories/Player"
-import Ship from "../Factories/Ship";
+import Player from "../Factories/Player";
 import UI from "./UI";
 import AI from "./AIPlayer";
 import PlaceShips from "./PlaceShips";
 
 const GameController = (() => {
 
-  const player1 = Player('P1');
-  const player2 = Player('P2');
+  const player1 = Player('P1', 'Player');
+  const player2 = Player('P2', 'Enemy');
 
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -15,6 +14,10 @@ const GameController = (() => {
 
   const opponent = () => {
     return player1.isActive ? player2: player1;
+  }
+
+  const activePlayer = () => {
+    return player1.isActive ? player1: player2;
   }
 
   const toggleActivePlayer = () => {
@@ -32,26 +35,31 @@ const GameController = (() => {
 
   const initPlayer2 = () => {
     player2.isActive = false;
-    let ships = [Ship(3, 'enemya'), Ship(2, 'enemyb')];
-    player2.gameboard.setShip(ships[0], {x: 1, y: 1}, 'x');
-    player2.gameboard.setShip(ships[1], {x: 2, y: 5}, 'y');
+    player2.gameboard = AI.getAIPlayer().gameboard;
     UI.renderGameboard('P2', player2.name, player2.gameboard.getBoard(), true);
     UI.updateShipsDisplay(player2.name, player2.gameboard.getShips());
 
   }
 
-  const playTurn = (coords) => {
+  const playTurn = async (coords) => {
     const opponentBoard = opponent().gameboard;
     if (!opponentBoard.isValidAttack(coords)) return;
     opponentBoard.receiveAttack(coords);
     UI.updateShipsDisplay(opponent().name, opponentBoard.getShips());
-    if (!opponentBoard.isShipHit(coords)) toggleActivePlayer();
+    if (!opponentBoard.isShipHit(coords)) {
+      await sleep(300);
+      toggleActivePlayer();
+    }
+    else if (opponentBoard.allShipsSunk()) {
+      UI.showWinner(activePlayer().displayName);
+      return;
+    }
     playGame();
   }
 
   const playGame = async () => {
     if (player2.isActive) {
-      await sleep(300);
+      await sleep(Math.random()*300 + 500);
       playTurn(AI.getCoords(opponent().gameboard.getBoard()));
     }
   }

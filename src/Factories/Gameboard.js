@@ -2,7 +2,8 @@ import UI from "../Modules/UI";
 
 const Gameboard = (size) => {
 
-  const ships = [];
+  let ships = [];
+  let sunk = 0;
 
   const cell = (x, y) => {
     return {
@@ -52,7 +53,7 @@ const Gameboard = (size) => {
   }
 
   const shipSunk = (shipName) => {
-    console.log(shipName);
+    sunk++;
     const coordsArray = board.filter(cell => cell.hasShip === shipName).map(cell => cell.coords);
     UI.shipSunk(coordsArray);
   }
@@ -63,6 +64,18 @@ const Gameboard = (size) => {
       if (at(shipCoords).hasShip !== '') return true;
     }
     return false;
+  }
+
+  const reset = () => {
+    ships = [];
+    for (const cell of board) {
+      cell.isShot = false;
+      cell.hasShip = '';
+    }
+  }
+
+  const allShipsSunk = () => {
+    return sunk >= ships.length;
   }
 
   const getBoard = () => board;
@@ -77,6 +90,8 @@ const Gameboard = (size) => {
     isCollisions,
     getBoard,
     getShips,
+    reset,
+    allShipsSunk
   };
 }
 

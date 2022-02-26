@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
 :root {
 	--cell-size: 45px;
@@ -19,6 +20,7 @@
 
 body {
 	font-family: "Lato", sans-serif;
+	font-family: "Press Start 2P", cursive;
 	overflow: hidden;
 }
 
@@ -35,33 +37,38 @@ body {
 }
 
 .heading {
+	text-align: center;
 	width: fit-content;
 	padding: 5px 2.5rem;
 	order: 0;
 	margin: 2rem auto;
 	color: black;
-	font-size: 4rem;
+	font-size: 3rem;
 	cursor: pointer;
 	font-weight: bold;
 }
 
-button.play {
+.sub-heading {
+	padding: 1rem;
+	font-size: 1rem;
+}
+
+.play {
 	width: fit-content;
 	display: none;
 	padding: 5px 2.5rem;
 	order: 2;
-	margin: 1rem auto;
+	margin: 1rem auto 0;
 	color: white;
 	background-color: blueviolet;
 	border-radius: 1.5rem;
 	font-size: 2rem;
 	cursor: pointer;
-	margin-top: 2rem;
 }
 
-button.reset {
+.reset {
 	width: fit-content;
-	margin: 0 auto;
+	margin: 1rem auto;
 	order: 3;
 	color: red;
 	background-color: white;
@@ -100,9 +107,17 @@ button.reset {
 	width: calc(var(--cell-size) * 10);
 }
 
+.board:not(.sample) {
+	pointer-events: none;
+	transition: all 0.5s;
+}
+
 .board.active {
-	outline: 2px solid red;
+	outline: 5px solid rgb(180, 180, 180);
 	border-radius: 5px;
+}
+
+.P2.active {
 	pointer-events: auto;
 }
 
@@ -131,12 +146,16 @@ button.reset {
 	left: 0;
 	right: 0;
 	margin: auto;
-	height: 20px;
-	width: 20px;
+	height: 8px;
+	width: 8px;
 	border-radius: 50%;
 	transform: scale(0);
 	opacity: 0;
-	transition: transform 0.4s cubic-bezier(0.42, 0, 0.55, 1.9);
+	transition: transform 0.2s cubic-bezier(0.42, 0, 0.55, 1.9);
+}
+
+.cell.hit {
+	filter: brightness(95%);
 }
 
 .cell.hit::after {
@@ -147,15 +166,11 @@ button.reset {
 
 .cell.hit.ship::after {
 	background-color: red;
+	transform: scale(1.8);
 }
 
 .cell:hover {
 	filter: brightness(95%);
-}
-
-.cell:active {
-	filter: brightness(95%);
-	transform: scale(0.9);
 }
 
 .P1 > .ship,
@@ -176,7 +191,7 @@ button.reset {
 }
 
 .ship.sunk {
-	background-color: var(--ship-sunk);
+	background-color: rgb(160, 160, 160);
 	border: none;
 	border-radius: 8px;
 }
@@ -190,9 +205,10 @@ button.reset {
 .ships-display {
 	margin: 0 2rem;
 	width: fit-content;
-	border: 1px solid black;
+	border: 2px outset rgb(243, 243, 243);
 	padding: 0.5rem 0;
-	border-radius: 5px;
+	border-radius: 1rem;
+	background-color: rgb(243, 243, 243);
 }
 
 .ships-display > .sunk {
@@ -208,9 +224,8 @@ button.reset {
 
 .ship-container > .ship-name {
 	padding: 3px 10px;
-	width: 7rem;
-	font-weight: bold;
-	font-size: 0.9rem;
+	width: 9rem;
+	font-size: 0.7rem;
 }
 
 .ship-container > .ship-body {
@@ -225,4 +240,29 @@ button.reset {
 	width: 10px;
 	border-radius: 2px;
 	background-color: var(--ship);
+}
+
+/* Winner modal */
+
+.modal-win {
+	position: absolute;
+	margin: 45vh 0;
+	left: 50%;
+	z-index: 10;
+	background-color: white;
+	border: 5px outset rgb(187, 187, 187);
+	padding: 1rem 2rem;
+	pointer-events: none;
+	display: none;
+	transform: translateX(-50%);
+}
+
+.modal-win.visible {
+	display: block;
+	pointer-events: auto;
+}
+
+.modal-win.visible + .main > .container > .board {
+	pointer-events: none;
+	filter: blur(2px) brightness(85%);
 }

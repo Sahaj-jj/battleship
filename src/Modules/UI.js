@@ -4,6 +4,7 @@ import PlaceShips from "./PlaceShips";
 const UI = (() => {
   const $main = document.querySelector('.main');
   const $modal = document.querySelector('.modal');
+  const $winModal = document.querySelector('.modal-win');
   let mode = 'PLAY';
 
   const decodeCoords = (coordsString) => {
@@ -19,8 +20,7 @@ const UI = (() => {
   }
   
   const newCellDOM = (cell) => {
-      const $cell = document.createElement('div');
-      $cell.classList.add('cell');
+      const $cell = createHtmlElement('div', ['cell']);
       $cell.setAttribute('data-coords', `${cell.coords.x} ${cell.coords.y}`);
       if (cell.hasShip) $cell.classList.add('ship');
       addCellListener($cell);
@@ -62,15 +62,9 @@ const UI = (() => {
   }
 
   const newGameboardContainerDOM = (playerName) => {
-    const $container = document.createElement('div');
-    $container.classList.add('container');
-    const $board = document.createElement('div');
-    $board.classList.add(`${playerName}`);
-    $board.classList.add('board');
-    const $shipsDisplay = document.createElement('div');
-    $shipsDisplay.classList.add('ships-display');
-    $container.appendChild($board);
-    $container.appendChild($shipsDisplay);
+    const $container = createHtmlElement('div', ['container']);
+    $container.appendChild(createHtmlElement('div', [`${playerName}`, 'board']));
+    $container.appendChild(createHtmlElement('div', ['ships-display']));
     if (mode === 'PLACE') $modal.appendChild($container);
     else $main.appendChild($container);
     return $container;
@@ -103,12 +97,18 @@ const UI = (() => {
     });
   }
 
+  const showWinner = (playerDisplayName) => {
+    $winModal.textContent = `${playerDisplayName} wins`;
+    $winModal.classList.add('visible');
+  }
+
   return {
     renderGameboard,
     updateShipsDisplay,
     cellHit,
     shipSunk,
     toggleActiveBoard,
+    showWinner,
   };
 
 })();
