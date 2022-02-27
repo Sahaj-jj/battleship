@@ -62,8 +62,22 @@ const Gameboard = (size) => {
     for (const shipCoords of shipCoordsArray) {
       if (shipCoords.x > size - 1 || shipCoords.y > size - 1) return true;
       if (at(shipCoords).hasShip !== '') return true;
+      const adjacentCoords = getAdjacentCoordsArray(shipCoords);
+      for (const coords of adjacentCoords) {
+        if (coords.x > size - 1 || coords.x < 0 || coords.y > size - 1 || coords.y < 0) continue;
+        if (at(coords).hasShip !== '') return true;
+      }
     }
     return false;
+  }
+
+  const getAdjacentCoordsArray = (coords) => {
+    return [
+      {x: coords.x + 1, y: coords.y},
+      {x: coords.x - 1, y: coords.y},
+      {x: coords.x, y: coords.y + 1},
+      {x: coords.x, y: coords.y - 1}
+    ];
   }
 
   const reset = () => {
