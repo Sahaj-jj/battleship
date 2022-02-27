@@ -60,7 +60,7 @@ const GameController = (() => {
   const playGame = async () => {
     if (player2.isActive) {
       await sleep(Math.random()*300 + 500);
-      playTurn(AI.getCoords(opponent().gameboard.getBoard()));
+      playTurn(AI.getCoords(opponent().gameboard));
     }
   }
 
