@@ -5,15 +5,14 @@ const AI = (() => {
 
   const AIplayer = Player('AI');
   const ships = [Ship(5, 'Carrier'), Ship(4, 'Battleship'), Ship(3, 'Cruiser'), Ship(3, 'Submarine'), Ship(2, 'Destroyer')];
-  let PrevShipHit = null;
-  // let PrevHit = null;
+  let prevShipHit = null;
 
   const placeShips = () => {
-    AIplayer.gameboard.setShip(ships[0], {x: 0, y: 0}, 'x');
-    AIplayer.gameboard.setShip(ships[1], {x: 9, y: 6}, 'y');
-    AIplayer.gameboard.setShip(ships[2], {x: 1, y: 7}, 'y');
-    AIplayer.gameboard.setShip(ships[3], {x: 7, y: 1}, 'x');
-    AIplayer.gameboard.setShip(ships[4], {x: 4, y: 3}, 'x');
+    AIplayer.gameboard.setShip(ships[0], { x: 0, y: 0 }, 'x');
+    AIplayer.gameboard.setShip(ships[1], { x: 9, y: 6 }, 'y');
+    AIplayer.gameboard.setShip(ships[2], { x: 1, y: 7 }, 'y');
+    AIplayer.gameboard.setShip(ships[3], { x: 7, y: 1 }, 'x');
+    AIplayer.gameboard.setShip(ships[4], { x: 4, y: 3 }, 'x');
   }
 
   const getRandomValidCoords = () => {
@@ -21,6 +20,20 @@ const AI = (() => {
     const validCells = board.filter(cell => !cell.isShot);
     const coords = validCells[Math.floor(Math.random() * validCells.length)].coords;
     return coords;
+  }
+
+  const getValidAdjacentCoords = (coords) => {
+    const adjacency = [-1, 1]; // 4-way adjacency
+    let adjacentCoords = [];
+    for(const adjacent of adjacency) {
+      for (const key in coords) {
+        const newPoint = coords[key] + adjacent;
+        if (newPoint <= 9 && newPoint >= 0){
+          adjacentCoords.push({...coords, [key]: newPoint});
+        }
+      }
+    }
+    return adjacentCoords;
   }
 
   function shuffleFisherYates(array) {
@@ -32,56 +45,51 @@ const AI = (() => {
     return array;
   }
 
-  const trace = () => {
-    const adjacentCoords = shuffleFisherYates([
-      {x: PrevShipHit.x + 1, y: PrevShipHit.y},
-      {x: PrevShipHit.x - 1, y: PrevShipHit.y},
-      {x: PrevShipHit.x, y: PrevShipHit.y + 1},
-      {x: PrevShipHit.x, y: PrevShipHit.y - 1}
-    ]);
+  const sum = (obj1, obj2, subtract = false) => {
+    return Object.keys(obj1).reduce((accumulator, key) => 
+          ({...accumulator, [key]: obj1[key] + (subtract ? -1: 1) * obj2[key]}), 
+          {});
+  }
 
-    let additiveCoords;
-
+  const traceLastShipHit = () => {
+    const adjacentCoords = shuffleFisherYates(getValidAdjacentCoords(prevShipHit));
     for (const coords of adjacentCoords) {
-      if (coords.x < 0 || coords.x > 9 || coords.y < 0 || coords.y > 9) continue;
       let cell = AIplayer.gameboard.at(coords);
-      let newCoords = Object.assign({}, coords);
       if (cell.isShot && cell.hasShip) {
-        additiveCoords = {x: newCoords.x - PrevShipHit.x, y: newCoords.y - PrevShipHit.y};
+        let newCoords = {...coords};
+        let direction = sum(newCoords, prevShipHit, true);
         while (cell.isShot && cell.hasShip) {
-          newCoords.x += additiveCoords.x;
-          newCoords.y += additiveCoords.y;
+          newCoords = sum(newCoords, direction);
+          if (newCoords.x < 0 || newCoords.x > 9 || newCoords.y < 0 || newCoords.y > 9) break;
           cell = AIplayer.gameboard.at(newCoords);
         }
         if (cell.isShot) {
-          const currentCoords = Object.assign({}, PrevShipHit);
-          currentCoords.x -= additiveCoords.x;
-          currentCoords.y -= additiveCoords.y;
-          return currentCoords;
+          return sum(prevShipHit, direction, true);
         }
         return newCoords;
       }
     }
-
     for (const coords of adjacentCoords) {
-      if (coords.x < 0 || coords.x > 9 || coords.y < 0 || coords.y > 9) continue;
       let cell = AIplayer.gameboard.at(coords);
       if (cell.isShot) continue;
       else return coords;
     }
   }
 
-  const getCoords = (board) => {
+  const getCoords = (gameboard) => {
     let coords;
-    AIplayer.gameboard = board;
-    if (PrevShipHit) {
+    AIplayer.gameboard = gameboard;
+    if (prevShipHit) {
       // if prev hit sunk a ship then reset
-      if (AIplayer.gameboard.getShips().find(ship => ship.name === AIplayer.gameboard.at(PrevShipHit).hasShip).isSunk()) {
-        PrevShipHit = null;
+      if (AIplayer.gameboard
+      .getShips()
+      .find(ship => ship.name === AIplayer.gameboard.at(prevShipHit).hasShip)
+      .isSunk()) {
+        prevShipHit = null;
         coords = getRandomValidCoords();
-      } else coords = trace();
+      } else coords = traceLastShipHit();
     } else coords = getRandomValidCoords();
-    if (AIplayer.gameboard.isShipHit(coords)) PrevShipHit = coords;
+    if (AIplayer.gameboard.isShipHit(coords)) prevShipHit = coords;
     return coords;
   };
 
