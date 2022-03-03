@@ -65,14 +65,13 @@ const UI = (() => {
     const $container = createHtmlElement('div', ['container']);
     $container.appendChild(createHtmlElement('div', [`${playerName}`, 'board']));
     $container.appendChild(createHtmlElement('div', ['ships-display']));
-    if (mode === 'PLACE') $modal.appendChild($container);
-    else $main.appendChild($container);
     return $container;
   }
 
   const renderGameboard = (player, playerName, board, isActive = false) => {
     mode = playerName === 'sample' ? 'PLACE': 'PLAY';
     const $container = newGameboardContainerDOM(playerName);
+    mode === 'PLACE' ? $modal.appendChild($container): $main.appendChild($container);
     if (isActive) $container.firstChild.classList.add('active');
     board.forEach(cell => $container.firstChild.appendChild(newCellDOM(cell)));
   }

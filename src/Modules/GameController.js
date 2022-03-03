@@ -44,22 +44,25 @@ const GameController = (() => {
   const playTurn = async (coords) => {
     const opponentBoard = opponent().gameboard;
     if (!opponentBoard.isValidAttack(coords)) return;
+
     opponentBoard.receiveAttack(coords);
-    UI.updateShipsDisplay(opponent().name, opponentBoard.getShips());
+    
     if (!opponentBoard.isShipHit(coords)) {
       await sleep(300);
       toggleActivePlayer();
-    }
-    else if (opponentBoard.allShipsSunk()) {
-      UI.showWinner(activePlayer().displayName);
-      return;
+    } else {
+      UI.updateShipsDisplay(opponent().name, opponentBoard.getShips());
+      if (opponentBoard.allShipsSunk()) {
+        UI.showWinner(activePlayer().displayName);
+        return;
+      }
     }
     playGame();
   }
 
   const playGame = async () => {
     if (player2.isActive) {
-      await sleep(Math.random()*300 + 500);
+      await sleep(Math.random()*300 + 300);
       playTurn(AI.getCoords(opponent().gameboard));
     }
   }
