@@ -2,7 +2,7 @@ import GameController from "./GameController";
 import PlaceShips from "./PlaceShips";
 
 const UI = (() => {
-  const $main = document.querySelector('.main');
+  const $gameboardsContainer = document.querySelector('.gameboards-container');
   const $modal = document.querySelector('.modal');
   const $winModal = document.querySelector('.modal-win');
   let mode = 'PLAY';
@@ -49,9 +49,10 @@ const UI = (() => {
   }
 
   const toggleActiveBoard = () => {
-    const $gameboardContainers = Array.from($main.children);
-    $gameboardContainers.forEach($gameboard => {
-      $gameboard.firstChild.classList.toggle('active');
+    const $gameboardContainers = Array.from($gameboardsContainer.children);
+    $gameboardContainers.forEach($gameboardContainer => {
+      if ($gameboardContainer.classList.contains('container'))
+        $gameboardContainer.firstChild.classList.toggle('active');
     });
   }
 
@@ -68,10 +69,10 @@ const UI = (() => {
     return $container;
   }
 
-  const renderGameboard = (player, playerName, board, isActive = false) => {
+  const renderGameboard = (playerName, board, isActive = false) => {
     mode = playerName === 'sample' ? 'PLACE': 'PLAY';
     const $container = newGameboardContainerDOM(playerName);
-    mode === 'PLACE' ? $modal.appendChild($container): $main.appendChild($container);
+    mode === 'PLACE' ? $modal.appendChild($container): $gameboardsContainer.appendChild($container);
     if (isActive) $container.firstChild.classList.add('active');
     board.forEach(cell => $container.firstChild.appendChild(newCellDOM(cell)));
   }
@@ -97,7 +98,7 @@ const UI = (() => {
   }
 
   const showWinner = (playerDisplayName) => {
-    $winModal.textContent = `${playerDisplayName} wins`;
+    $winModal.firstChild.textContent = `${playerDisplayName} wins`;
     $winModal.classList.add('visible');
   }
 

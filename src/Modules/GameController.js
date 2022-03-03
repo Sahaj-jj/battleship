@@ -1,7 +1,7 @@
 import Player from "../Factories/Player";
 import UI from "./UI";
-import AI from "./AIPlayer";
 import PlaceShips from "./PlaceShips";
+import AI from "./AIPlayer";
 
 const GameController = (() => {
 
@@ -29,14 +29,14 @@ const GameController = (() => {
   const initPlayer1 = () => {
     player1.isActive = true;
     player1.gameboard = PlaceShips.getSamplePlayer().gameboard;
-    UI.renderGameboard('P1', player1.name, player1.gameboard.getBoard());
+    UI.renderGameboard(player1.name, player1.gameboard.getBoard());
     UI.updateShipsDisplay(player1.name, player1.gameboard.getShips());
   }
 
   const initPlayer2 = () => {
     player2.isActive = false;
     player2.gameboard = AI.getAIPlayer().gameboard;
-    UI.renderGameboard('P2', player2.name, player2.gameboard.getBoard(), true);
+    UI.renderGameboard(player2.name, player2.gameboard.getBoard(), true);
     UI.updateShipsDisplay(player2.name, player2.gameboard.getShips());
 
   }

@@ -77,6 +77,7 @@ const PlaceShips = (() => {
     player.gameboard.getBoard().forEach(cell => {
       cellAt(cell.coords).classList.remove('ship');
       cellAt(cell.coords).classList.remove('temp');
+      cellAt(cell.coords).classList.remove('invalid');
     });
     const $shipContainers = Array.from(document.querySelector('.ships-display').children);
     $shipContainers.forEach($shipContainer => $shipContainer.classList.remove('sunk'));
@@ -91,7 +92,7 @@ const PlaceShips = (() => {
   const getSamplePlayer = () => player;
 
   const init = () => {
-    UI.renderGameboard('sample', player.name, player.gameboard.getBoard());
+    UI.renderGameboard(player.name, player.gameboard.getBoard());
     UI.updateShipsDisplay(player.name, ships);
 
     document.addEventListener('keyup', ({ key }) => {
