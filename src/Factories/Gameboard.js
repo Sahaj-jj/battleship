@@ -1,5 +1,3 @@
-import UI from "../Modules/UI";
-
 const Gameboard = (size) => {
 
   let ships = [];
@@ -28,21 +26,6 @@ const Gameboard = (size) => {
     return !at(coords).isShot;
   }
 
-  const isShipHit = (coords) => {
-    return at(coords).hasShip !== '';
-  }
-
-  const receiveAttack = (coords) => {
-    const cell = at(coords);
-    cell.isShot = true;
-    UI.cellHit(coords);
-    if (cell.hasShip) {
-      const ship = ships.find(ship => ship.name === cell.hasShip);
-      ship.hit();
-      if (ship.isSunk()) shipSunk(ship.name);
-    }
-  }
-
   const setShip = (ship, coords, axis = 'x') => {
     ships.push(ship);
     let newCoords = coords;
@@ -52,10 +35,24 @@ const Gameboard = (size) => {
     }
   }
 
-  const shipSunk = (shipName) => {
-    sunk++;
-    const coordsArray = board.filter(cell => cell.hasShip === shipName).map(cell => cell.coords);
-    UI.shipSunk(coordsArray);
+  const isShipHit = (coords) => {
+    return at(coords).hasShip !== '';
+  }
+
+  const receiveAttack = (coords) => {
+    const cell = at(coords);
+    cell.isShot = true;
+    if (cell.hasShip) shipHit(cell.hasShip);
+  }
+
+  const shipHit = (shipName) => {
+    const ship = ships.find(ship => ship.name === shipName);
+    ship.hit();
+    if (ship.isSunk()) sunk++;
+  }
+
+  const getShipCoordsArray = (ship) => {
+    return board.filter(cell => cell.hasShip === ship.name).map(cell => cell.coords);
   }
 
   const isCollisions = (shipCoordsArray) => {
@@ -69,6 +66,10 @@ const Gameboard = (size) => {
       }
     }
     return false;
+  }
+
+  const getShipByCoords = (coords) => {
+    return ships.find(ship => ship.name === at(coords).hasShip);
   }
 
   const getAdjacentCoordsArray = (coords) => {
@@ -101,7 +102,9 @@ const Gameboard = (size) => {
     isShipHit,
     receiveAttack,
     setShip,
+    getShipCoordsArray,
     isCollisions,
+    getShipByCoords,
     getBoard,
     getShips,
     reset,

@@ -46,15 +46,20 @@ const GameController = (() => {
     if (!opponentBoard.isValidAttack(coords)) return;
 
     opponentBoard.receiveAttack(coords);
+    UI.cellHit(coords);
     
     if (!opponentBoard.isShipHit(coords)) {
       await sleep(300);
       toggleActivePlayer();
     } else {
       UI.updateShipsDisplay(opponent().name, opponentBoard.getShips());
-      if (opponentBoard.allShipsSunk()) {
-        UI.showWinner(activePlayer().displayName);
-        return;
+      const ship = opponentBoard.getShipByCoords(coords);
+      if(ship.isSunk()) {
+        UI.shipSunk(opponentBoard.getShipCoordsArray(ship));
+        if (opponentBoard.allShipsSunk()) {
+          UI.showWinner(activePlayer().displayName);
+          return;
+        }
       }
     }
     playGame();
