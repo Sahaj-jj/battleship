@@ -59,26 +59,30 @@ const Gameboard = (size) => {
     for (const shipCoords of shipCoordsArray) {
       if (shipCoords.x > size - 1 || shipCoords.y > size - 1) return true;
       if (at(shipCoords).hasShip !== '') return true;
-      const adjacentCoords = getAdjacentCoordsArray(shipCoords);
+      const adjacentCoords = getValidAdjacentCoords(shipCoords);
       for (const coords of adjacentCoords) {
-        if (coords.x > size - 1 || coords.x < 0 || coords.y > size - 1 || coords.y < 0) continue;
         if (at(coords).hasShip !== '') return true;
       }
     }
     return false;
   }
 
-  const getShipByCoords = (coords) => {
-    return ships.find(ship => ship.name === at(coords).hasShip);
+  const getValidAdjacentCoords = (coords) => {
+    const adjacency = [-1, 1]; // 4-way adjacency
+    let adjacentCoords = [];
+    for(const adjacent of adjacency) {
+      for (const key in coords) {
+        const newPoint = coords[key] + adjacent;
+        if (newPoint < size && newPoint >= 0){
+          adjacentCoords.push({...coords, [key]: newPoint});
+        }
+      }
+    }
+    return adjacentCoords;
   }
 
-  const getAdjacentCoordsArray = (coords) => {
-    return [
-      {x: coords.x + 1, y: coords.y},
-      {x: coords.x - 1, y: coords.y},
-      {x: coords.x, y: coords.y + 1},
-      {x: coords.x, y: coords.y - 1}
-    ];
+  const getShipByCoords = (coords) => {
+    return ships.find(ship => ship.name === at(coords).hasShip);
   }
 
   const reset = () => {
@@ -103,6 +107,7 @@ const Gameboard = (size) => {
     receiveAttack,
     setShip,
     getShipCoordsArray,
+    getValidAdjacentCoords,
     isCollisions,
     getShipByCoords,
     getBoard,

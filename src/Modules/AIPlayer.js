@@ -22,20 +22,6 @@ const AI = (() => {
     return coords;
   }
 
-  const getValidAdjacentCoords = (coords) => {
-    const adjacency = [-1, 1]; // 4-way adjacency
-    let adjacentCoords = [];
-    for(const adjacent of adjacency) {
-      for (const key in coords) {
-        const newPoint = coords[key] + adjacent;
-        if (newPoint <= 9 && newPoint >= 0){
-          adjacentCoords.push({...coords, [key]: newPoint});
-        }
-      }
-    }
-    return adjacentCoords;
-  }
-
   function shuffleFisherYates(array) {
     let i = array.length;
     while (i--) {
@@ -52,7 +38,7 @@ const AI = (() => {
   }
 
   const traceLastShipHit = () => {
-    const adjacentCoords = shuffleFisherYates(getValidAdjacentCoords(prevShipHit));
+    const adjacentCoords = shuffleFisherYates(AIplayer.gameboard.getValidAdjacentCoords(prevShipHit));
     for (const coords of adjacentCoords) {
       let cell = AIplayer.gameboard.at(coords);
       if (cell.isShot && cell.hasShip) {
