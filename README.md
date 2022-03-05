@@ -5,7 +5,7 @@ This project was an introdudction to **Test-Driven-Development (TDD)** using Jes
 <br>
 Basic OOP principles using modern JS (ES6) formed the pillars upon which the project was built.
 <br>
-[Live Preview](https://sahaj-jj.github.io/todoist/)
+[Live Preview](https://sahaj-jj.github.io/battleship/)
 
 Features Smart AI akin to human (fires adjacent shots if ship is hit)
 
