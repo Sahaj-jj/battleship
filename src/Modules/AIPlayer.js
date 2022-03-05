@@ -31,7 +31,7 @@ const AI = (() => {
     return array;
   }
 
-  const sum = (obj1, obj2, subtract = false) => {
+  const sumObjProps = (obj1, obj2, subtract = false) => {
     return Object.keys(obj1).reduce((accumulator, key) => 
           ({...accumulator, [key]: obj1[key] + (subtract ? -1: 1) * obj2[key]}), 
           {});
@@ -43,14 +43,14 @@ const AI = (() => {
       let cell = AIplayer.gameboard.at(coords);
       if (cell.isShot && cell.hasShip) {
         let newCoords = {...coords};
-        let direction = sum(newCoords, prevShipHit, true);
+        let direction = sumObjProps(newCoords, prevShipHit, true);
         while (cell.isShot && cell.hasShip) {
-          newCoords = sum(newCoords, direction);
+          newCoords = sumObjProps(newCoords, direction);
           if (newCoords.x < 0 || newCoords.x > 9 || newCoords.y < 0 || newCoords.y > 9) break;
           cell = AIplayer.gameboard.at(newCoords);
         }
         if (cell.isShot) {
-          return sum(prevShipHit, direction, true);
+          return sumObjProps(prevShipHit, direction, true);
         }
         return newCoords;
       }
